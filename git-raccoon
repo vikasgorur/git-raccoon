@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Number of commits in the repo or 10, whichever is higher.
+ncommits=$(git log --format=oneline|head -10|wc -l)
+
+# A random number between 1 and ncommits
+ncommits_to_trash=$(expr $RANDOM % $ncommits + 1)
+
+git reset "HEAD~$ncommits_to_trash"
+
+modified_files=$(git status --porcelain|grep ' M '|cut -f3 -d' ')
+for f in $modified_files
+do
+    git rm -f $f
+done
+
+git commit -a -m "Death is coming. Eat trash. Be free."
